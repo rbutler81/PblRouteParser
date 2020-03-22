@@ -6,7 +6,9 @@ import java.io.*;
 import java.lang.reflect.Array;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class Main {
@@ -19,13 +21,10 @@ public class Main {
     public static void main(String[] args) {
 
         // Check for LOG file ///////////////////////////////////////////////////////////////
-        if (Array.getLength(args) < 1){
-            throw new ArgNotFoundException("<Log File>");
-        }
-
         File folder = new File(PATH);
         File[] listOfFiles = folder.listFiles();
 
+        PickingDays pickDays = new PickingDays();
 
         for (File f : listOfFiles) {
 
@@ -59,14 +58,19 @@ public class Main {
             }
 
             for (PblRoute p : pblr) {
-                if (p.getPriority().size() > 1) {
-                    System.out.println();
-                }
+                pickDays.add(p);
             }
+
+            System.out.println();
         }
+
+        // Go through routes with 0 start date
+        for (int i = 0; i < pickDays.getPickDay().get(0).getRoutes().size(); i++) {
+
+            int index = pickDays.getIndex(0);
+        }
+
+
         System.out.println();
-
-
-
     }
 }
