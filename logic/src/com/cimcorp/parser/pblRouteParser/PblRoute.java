@@ -1,7 +1,7 @@
 package com.cimcorp.parser.pblRouteParser;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Array;
+import java.util.*;
 
 public class PblRoute {
 
@@ -49,6 +49,15 @@ public class PblRoute {
             pr.add(pblr);
             System.out.println();
         }
+    }
+
+    public List<PickStartEndEvent> getStartEndEvents() {
+        List<PickStartEndEvent> ret = new ArrayList<>();
+        for (PblPickOrder ppo : this.pickOrders) {
+            ret.addAll(ppo.getStartEndEvents());
+        }
+        Collections.sort(ret, Comparator.comparing(PickStartEndEvent::getTime));
+        return ret;
     }
 
     public double getStartTime() {

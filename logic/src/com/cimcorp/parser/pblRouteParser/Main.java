@@ -20,9 +20,10 @@ public class Main {
     // setup static variables ///////////////////////////////////////////////////////////////////
     static final String PATH = Paths.get(".").toAbsolutePath().normalize().toString() + "\\logs\\";
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException {
 
         final String OUTPUT_FILE = Paths.get(".").toAbsolutePath().normalize().toString() + "\\output.csv";
+        final String COUNT_FILE = Paths.get(".").toAbsolutePath().normalize().toString() + "\\count.csv";
 
         // Check for LOG file ///////////////////////////////////////////////////////////////
         File folder = new File(PATH);
@@ -68,6 +69,10 @@ public class Main {
             System.out.println();
         }
 
+        for (PickingDay p : pickDays.getPickDay()) {
+            p.findDuplicateRoutes();
+        }
+
         // Go through routes with 0 start date - consolidate picking times across days
 
         // find entry with pickdate = 0 (pickorders with only end times)
@@ -105,11 +110,9 @@ public class Main {
             }
         }
 
-        /*for (PickingDay pd : pickDays.getPickDay()) {
-            for (PblRoute pr : pd.getRoutes()) {
+        ;
 
-            }
-        }*/
+        CSVUtil.writeObject(pickDays.getPickDay().get(12).generateActivePickOrders(), COUNT_FILE, ",");
 
         try {
             CSVUtil.writeObject(pickDays.getPickDay(), OUTPUT_FILE, ",");

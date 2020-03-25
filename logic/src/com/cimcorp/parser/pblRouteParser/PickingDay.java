@@ -3,10 +3,7 @@ package com.cimcorp.parser.pblRouteParser;
 import csvUtils.CSVUtil;
 import csvUtils.CSVWriter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PickingDay implements CSVWriter {
 
@@ -22,11 +19,15 @@ public class PickingDay implements CSVWriter {
         this.routes.add(route);
     }
 
-    /*public void removeBadRoutes() {
-        for (int i = 0; i < this.routes.size(); i++) {
-            if (this.routes.get(i))
+    public List<PickStartEndEvent> generateActivePickOrders() {
+
+        List<PickStartEndEvent> ret = new ArrayList<>();
+        for (PblRoute pr : this.routes) {
+            ret.addAll(pr.getStartEndEvents());
         }
-    }*/
+        Collections.sort(ret, Comparator.comparing(PickStartEndEvent::getTime));
+        return ret;
+    }
 
     public void findDuplicateRoutes(){
         for (int i = 0; i < this.routes.size(); i++) {

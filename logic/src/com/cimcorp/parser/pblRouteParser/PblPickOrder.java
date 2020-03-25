@@ -1,5 +1,6 @@
 package com.cimcorp.parser.pblRouteParser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PblPickOrder {
@@ -78,6 +79,13 @@ public class PblPickOrder {
         this.endTime = endTime;
         this.duration = this.endTime - this.startTime;
         return this;
+    }
+
+    public List<PickStartEndEvent> getStartEndEvents() {
+        List<PickStartEndEvent> ret = new ArrayList<>();
+        ret.add(new PickStartEndEvent(true, this.startTime));
+        ret.add(new PickStartEndEvent(false,this.endTime));
+        return ret;
     }
 
     public double getStartTime() {
