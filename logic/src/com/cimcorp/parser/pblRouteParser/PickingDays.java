@@ -1,5 +1,7 @@
 package com.cimcorp.parser.pblRouteParser;
 
+import csvUtils.CSVWriter;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,4 +63,14 @@ public class PickingDays {
         this.pickDay = pickDay;
         return this;
     }
+
+    public List<PblRoute> getUnmatchedRoutes() {
+        return unmatchedRoutes;
+    }
+
+    public PickingDays setUnmatchedRoutes(List<PblRoute> unmatchedRoutes) {
+        this.unmatchedRoutes = unmatchedRoutes;
+        return this;
+    }
+
 }

@@ -55,6 +55,30 @@ public class PblRoute {
         return startTime;
     }
 
+    public void updateStartAndEndTimes() {
+        for (PblPickOrder po : this.pickOrders) {
+            if ((po.getStartTime() < this.startTime) && (po.getStartTime() != 0)) this.startTime = po.getStartTime();
+            if ((po.getEndTime() > this.endTime) && (po.getEndTime() != 0)) this.endTime = po.getEndTime();
+            this.duration = this.endTime - this.startTime;
+        }
+    }
+
+    public boolean findPickOrderAndUpdateEndtime(long pickOrderId, double endTime) {
+        boolean found = false;
+        for (PblPickOrder ppo : this.pickOrders) {
+            if (ppo.getPickOrderId() == pickOrderId) {
+                found = true;
+                ppo.setEndTimeAndUpdateDuration(endTime);
+                /*if (endTime > this.endTime) {
+                    this.endTime = endTime;
+                    this.duration = this.endTime - this.startTime;
+                }*/
+            }
+            if (found) break;
+        }
+        return found;
+    }
+
     public PblRoute setStartTime(double startTime) {
         this.startTime = startTime;
         return this;

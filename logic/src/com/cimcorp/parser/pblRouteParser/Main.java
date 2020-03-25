@@ -1,9 +1,11 @@
 package com.cimcorp.parser.pblRouteParser;
 
 import com.custom.ArgNotFoundException;
+import csvUtils.CSVUtil;
 
 import java.io.*;
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +21,8 @@ public class Main {
     static final String PATH = Paths.get(".").toAbsolutePath().normalize().toString() + "\\logs\\";
 
     public static void main(String[] args) {
+
+        final String OUTPUT_FILE = Paths.get(".").toAbsolutePath().normalize().toString() + "\\output.csv";
 
         // Check for LOG file ///////////////////////////////////////////////////////////////
         File folder = new File(PATH);
@@ -64,12 +68,62 @@ public class Main {
             System.out.println();
         }
 
-        // Go through routes with 0 start date
-        for (int i = 0; i < pickDays.getPickDay().get(0).getRoutes().size(); i++) {
+        // Go through routes with 0 start date - consolidate picking times across days
 
-            int index = pickDays.getIndex(0);
+        // find entry with pickdate = 0 (pickorders with only end times)
+        int pickDateEqualsZeroIndex = 0;
+        for (int i = 0; i < pickDays.getPickDay().size(); i++) {
+            if (pickDays.getPickDay().get(i).getPickDate() == 0) {
+                pickDateEqualsZeroIndex = i;
+            }
         }
 
+        for (int i = 0; i < pickDays.getPickDay().get(pickDateEqualsZeroIndex).getRoutes().size(); i++) {
+
+            double endTime = pickDays.getPickDay().get(pickDateEqualsZeroIndex).getRoutes().get(i).getEndTime();
+            int previousDay = (int) endTime - 1;
+            int pickDayIndex = pickDays.getIndex(previousDay);
+            if (pickDayIndex > -1) {
+
+                long poid = pickDays.getPickDay().get(pickDateEqualsZeroIndex).getRoutes().get(i).getPickOrders().get(0).getPickOrderId();
+                pickDays.getPickDay().get(pickDayIndex).findRouteByPickingIdAndUpdateEndTime(poid, endTime);
+                System.out.println();
+
+            } else {
+                pickDays.getUnmatchedRoutes().add(pickDays.getPickDay().get(pickDateEqualsZeroIndex).getRoutes().get(i));
+            }
+
+        }
+
+        // remove the picking day = 0
+        pickDays.getPickDay().remove(pickDateEqualsZeroIndex);
+
+        // update route start / end times based on the pickorder start / end times
+        for (PickingDay pd : pickDays.getPickDay()) {
+            for (PblRoute pr : pd.getRoutes()) {
+                pr.updateStartAndEndTimes();
+            }
+        }
+
+        /*for (PickingDay pd : pickDays.getPickDay()) {
+            for (PblRoute pr : pd.getRoutes()) {
+
+            }
+        }*/
+
+        try {
+            CSVUtil.writeObject(pickDays.getPickDay(), OUTPUT_FILE, ",");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
 
         System.out.println();
     }

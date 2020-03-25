@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="CustomExceptions" />
+    <orderEntry type="module" module-name="CSVUtils" />
   </component>
 </module>

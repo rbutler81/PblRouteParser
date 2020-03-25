@@ -74,6 +74,12 @@ public class PblPickOrder {
 
     }
 
+    public PblPickOrder setEndTimeAndUpdateDuration(double endTime) {
+        this.endTime = endTime;
+        this.duration = this.endTime - this.startTime;
+        return this;
+    }
+
     public double getStartTime() {
         return startTime;
     }
